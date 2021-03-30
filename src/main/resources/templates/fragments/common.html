@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head th:fragment="head(title)">
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-giJF6kkoqNQ00vy+HMDP7azOuL0xtbfIcaT9wjKHr8RbDVddVHyTfAAsrekwKmP1" crossorigin="anonymous">
+    <link href="starter-template.css" th:href="@{/css/starter-template.css}" rel="stylesheet">
+    <title th:text="${title}"> Hello, Spring boot!</title>
+    <style>
+      .bd-placeholder-img {
+        font-size: 1.125rem;
+        text-anchor: middle;
+        -webkit-user-select: none;
+        -moz-user-select: none;
+        user-select: none;
+      }
+
+      @media (min-width: 768px) {
+        .bd-placeholder-img-lg {
+          font-size: 3.5rem;
+        }
+      }
+    </style>
+
+</head>
+
+<body>
+<nav class="navbar navbar-expand-md navbar-dark bg-dark fixed-top" th:fragment="menu(menu)">
+    <!-- <script th:if="${menu} == 'board'">
+      alert("test");
+    </script> -->
+    <div class="container-fluid">
+        <a class="navbar-brand" href="/">Sonar Service</a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarsExampleDefault" aria-controls="navbarsExampleDefault" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+
+        <div class="collapse navbar-collapse" id="navbarsExampleDefault">
+            <ul class="navbar-nav me-auto mb-1 mb-md-0">
+                <li class="nav-item" th:classappend="${menu} == 'home'? 'active'">
+                    <a class="nav-link" aria-current="page" th:href="@{/}">홈 <span class="sr-only" th:if="${menu} == 'home'">(current)</span></a>
+                </li>
+                <li class="nav-item" th:classappend="${menu} == 'mavenfile'? 'active'">
+                    <a class="nav-link" th:href="@{/files/upload}">분석할 파일 업로드 <span class="sr-only" th:if="${menu} == 'mavenfile'">(current)</span></a>
+                </li>
+                <li class="nav-item" th:classappend="${menu} == 'analysis'? 'active'">
+                    <a class="nav-link" th:href="@{/sonar/analysis}">소나큐브 분석하기 <span class="sr-only" th:if="${menu} == 'analysis'">(current)</span></a>
+                </li>
+                <li class="nav-item" th:classappend="${menu} == 'dashboard'? 'active'">
+                    <a class="nav-link" th:href="@{/sonar/dashboard}">대시보드 <span class="sr-only" th:if="${menu} == 'dashboard'">(current)</span></a>
+                </li>
+            </ul>
+
+            <a class="btn btn-outline-success" type="submit" th:href="@{/users/login}"
+               th:if="${session.UserInfo eq null}">로그인</a>
+            <a class="btn btn-outline-success" type="submit" th:href="@{/users/logout}"
+               th:unless="${session.UserInfo eq null}">로그아웃</a>
+            <a class="btn btn-outline-success" type="submit" th:href="@{/users/join}">회원가입</a>
+        </div>
+    </div>
+</nav>
+</body>
+
+</html>

@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.jaeho.sonarservice.domain.dao.FileDao">
+
+    <insert id="insertFile" parameterType="FileDto">
+    <!-- 파일 저장 -->
+        INSERT INTO SONARSERVICE.MAVEN_FILES(user_id, project_name, file_name)
+        VALUES(#{userId}, #{projectName}, #{fileName})
+    </insert>
+
+    <select id="getFiles" resultType="FileDto">
+    <!-- 파일 조회-->
+        SELECT * FROM SONARSERVICE.MAVEN_FILES
+        WHERE user_id = #{user_Uid}
+    </select>
+
+    <select id="getByFileId" resultType="FileDto">
+    <!-- 프로젝트 단건 조회 -->
+        SELECT * FROM SONARSERVICE.MAVEN_FILES
+        WHERE id = #{fileId}
+    </select>
+
+    <delete id="deleteById">
+    <!-- 파일 삭제 -->
+        DELETE FROM SONARSERVICE.MAVEN_FILES
+        WHERE id = #{fileId}
+    </delete>
+</mapper>

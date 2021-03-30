@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.jaeho.sonarservice.domain.dao.SonarqubeDao">
+
+    <insert id="insertSonarqube">
+        INSERT INTO SONARSERVICE.SONARQUBE(sonarqube_name, sonarqube_key, maven_files_id)
+        VALUES(#{sonarqubeName}, #{sonarqubeKey}, #{mavenFileId})
+    </insert>
+
+    <select id="getCnt" resultType="int">
+        SELECT COUNT(*)
+        FROM SONARSERVICE.SONARQUBE
+        WHERE maven_files_id = #{fileId}
+    </select>
+
+    <select id="getByUserUid" resultType="hashMap">
+        SELECT A.project_name, B.id, B.sonarqube_key FROM SONARSERVICE.MAVEN_FILES A
+        INNER JOIN SONARSERVICE.SONARQUBE B
+        ON A.id = B.maven_files_id
+        where A.user_id = #{userUid}
+    </select>
+
+    <select id="getById" resultType="SonarqubeDto">
+        SELECT * FROM SONARSERVICE.SONARQUBE
+        WHERE id = #{sonarqubeId}
+    </select>
+
+    <delete id="deleteByFileId">
+        SELECT * FROM SONARSERVICE.SONARQUBE
+        WHERE maven_files_id = #{fileId}
+    </delete>
+</mapper>
