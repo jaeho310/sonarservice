@@ -51,4 +51,14 @@ public class SonarqubeApiController {
         List<Map<String, Object>> response = sonarqubeService.getSonarqubeList(httpSession);
         return new ResponseEntity(response, HttpStatus.OK);
     }
+
+    /**
+     * 소나큐브 서버 url을 받아오는 메서드
+     * @return
+     */
+    @GetMapping("/url")
+    public ResponseEntity getSonarUrl() {
+        Map<String, String> sonarUrl = sonarqubeService.getSonarUrl();
+        return new ResponseEntity(sonarUrl, HttpStatus.OK);
+    }
 }

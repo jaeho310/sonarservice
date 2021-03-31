@@ -52,6 +52,7 @@ public class FileService {
             makeFolder.mkdir();
             log.info("{} 폴더생성", downloadDir);
         }
+        log.info(downloadDir);
         Path copyOfLocation = Paths.get(downloadDir + File.separator +StringUtils.cleanPath(multipartFile.getOriginalFilename()));
         try {
             Files.copy(multipartFile.getInputStream(), copyOfLocation, StandardCopyOption.REPLACE_EXISTING);

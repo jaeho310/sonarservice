@@ -1,13 +1,32 @@
 let token = $("meta[name='_csrf']").attr("content");
 let header = $("meta[name='_csrf_header']").attr("content");
-let sonarqubeIssueUrl = "http://localhost:9000/project/issues?";
-let sonarqubeOverviewUrl = "http://localhost:9000/dashboard?";
+let sonarqubeIssueUrl = '';
+let sonarqubeOverviewUrl = '';
 let sonarqubeData = new Object();
 
 $(document).ready(function(){
     getProject();
+    getSonarqubeUrl();
 
 });
+
+function getSonarqubeUrl() {
+    $.ajax({
+            url: '/api/sonar/url',
+            contentType: 'application/json',
+            type : 'get',
+            beforeSend: function(xhr) {
+                xhr.setRequestHeader(header, token);
+            },
+            success: function(data) {
+                sonarqubeIssueUrl = data.url + "/project/issues?";
+                sonarqubeOverviewUrl = data.url + "/dashboard?";
+            },
+            error: function(request,status,error){
+                alert(" message = " + request.responseText);
+            }
+        });
+}
 
 function getProject() {
     $.ajax({
@@ -49,8 +68,8 @@ $("#projectBox").change(function() {
             $("#bug").html(data.bugs);
             $("#smell").html(data.codeSmell);
             $("#security").html(data.vulnerability);
-            $("#coverage").html(data.coverage);
-            $("#duplication").html(data.duplicated);
+            $("#coverage").html(data.coverage +"%");
+            $("#duplication").html(data.duplicated) +"%";
             $("#loc").html(data.loc);
         },
         error: function(request,status,error){

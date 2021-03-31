@@ -25,6 +25,7 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.nio.charset.Charset;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -194,5 +195,15 @@ public class SonarqubeService {
         UserDto userInfo = (UserDto) httpSession.getAttribute("UserInfo");
         int userUid = userInfo.getId();
         return sonarqubeDao.getByUserUid(userUid);
+    }
+
+    /**
+     * 소나큐크서버의 url을 제공하는 메서드
+     * @return
+     */
+    public Map<String, String> getSonarUrl() {
+        Map<String, String> response = new HashMap<>();
+        response.put("url", sonarUrl);
+        return response;
     }
 }
