@@ -7,6 +7,7 @@ import com.jaeho.sonarservice.domain.model.FileDto;
 import com.jaeho.sonarservice.domain.model.UserDto;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
@@ -25,11 +26,17 @@ import java.util.List;
 @Slf4j
 public class FileService {
 
-    @Autowired
     private FileDao fileDao;
 
-    @Autowired
     private SonarqubeDao sonarqubeDao;
+
+    public FileService(FileDao fileDao, SonarqubeDao sonarqubeDao) {
+        this.fileDao = fileDao;
+        this.sonarqubeDao = sonarqubeDao;
+    }
+
+    @Value("${file.location}")
+    private String rootLocation;
 
     /**
      * inputStream을 가져와서 저장위치로 파일을 쓰며 기존에 존재하면 대체하는 형식
@@ -37,7 +44,7 @@ public class FileService {
      * @param httpSession 유저정보를 얻기위한 session
      */
     public void fileUpload(MultipartFile multipartFile, String projectName, HttpSession httpSession) {
-        String downloadDir = "./maven_files";
+        String downloadDir = rootLocation;
         UserDto userInfo = (UserDto) httpSession.getAttribute("UserInfo");
         downloadDir = downloadDir + "/" + userInfo.getUserId();
         File makeFolder = new File(downloadDir);
@@ -45,7 +52,6 @@ public class FileService {
             makeFolder.mkdir();
             log.info("{} 폴더생성", downloadDir);
         }
-//        Path copyOfLocation = Paths.get(uploadDir + File.separator + downloadDir + File.separator +StringUtils.cleanPath(multipartFile.getOriginalFilename()));
         Path copyOfLocation = Paths.get(downloadDir + File.separator +StringUtils.cleanPath(multipartFile.getOriginalFilename()));
         try {
             Files.copy(multipartFile.getInputStream(), copyOfLocation, StandardCopyOption.REPLACE_EXISTING);
@@ -54,7 +60,18 @@ public class FileService {
             throw new BusinessException("파일업로드 실패");
         }
         FileDto fileDto = FileDto.builder().userId(userInfo.getId()).fileName(multipartFile.getOriginalFilename()).projectName(projectName).build();
-        fileDao.insertFile(fileDto);
+        this.insertFile(fileDto);
+    }
+
+    /**
+     * 파일저장후 해당파일정보를 table에 insert 하는 메서드
+     * @param fileDto
+     * @return
+     */
+
+    @Transactional
+    public int insertFile(FileDto fileDto) {
+        return fileDao.insertFile(fileDto);
     }
 
     /**

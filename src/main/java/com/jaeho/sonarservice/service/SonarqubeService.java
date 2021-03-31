@@ -10,9 +10,11 @@ import com.jaeho.sonarservice.domain.model.SonarqubeMeasure;
 import com.jaeho.sonarservice.domain.model.UserDto;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.*;
 import org.springframework.http.client.support.BasicAuthenticationInterceptor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponents;
 import org.springframework.web.util.UriComponentsBuilder;
@@ -27,7 +29,6 @@ import java.util.List;
 import java.util.Map;
 
 @Service
-@AllArgsConstructor
 @Slf4j
 public class SonarqubeService {
 
@@ -37,14 +38,34 @@ public class SonarqubeService {
 
     private SonarqubeDao sonarqubeDao;
 
-    private final String rootDir = "./maven_files/";
+    @Value("${file.location}")
+    private String rootDir;
+
+    @Value("${sonarqube.token}")
+    private String sonarToken;
+
+    @Value("${sonarqube.host.url}")
+    private String sonarUrl;
+
+    @Value("${sonarqube.username}")
+    private String sonarUsername;
+
+    @Value("${sonarqube.password}")
+    private String sonarPassword;
+
+    public SonarqubeService(UnzipService unzipService, FileService fileService, SonarqubeDao sonarqubeDao) {
+        this.unzipService = unzipService;
+        this.fileService = fileService;
+        this.sonarqubeDao = sonarqubeDao;
+    }
 
     /**
-     * DB에서 파일정보를 select, 소나큐브 분석
+     * 유저정보와 fileId를 통해 DB에서 파일정보를 select, 해당 zip파일의 압축을풀고 소나큐브 분석을 하는 메서드
      * @param fileId
      * @return
      * @throws Throwable
      */
+    @Transactional
     public boolean analysis(int fileId, HttpSession httpSession) throws Throwable {
         FileDto fileDto = fileService.getByFileId(fileId);
         String pureFileName = fileDto.getFileName().replace(".zip","");
@@ -70,7 +91,7 @@ public class SonarqubeService {
 
     /**
      * mvn 명령어를 통해 sonarqube 분석
-     * 서버PC에 소나큐브서버를 띄워놔야 가능하다.
+     * 소나큐브 서버가 필요합니다.
      * @param pureFileName
      * @throws IOException
      * @throws InterruptedException
@@ -80,9 +101,9 @@ public class SonarqubeService {
         command.add("cmd");
         command.add("/c");
         command.add("mvn clean install -f " + rootDir + "/" + userId + "/" + pureFileName +
-                " sonar:sonar -Dsonar.login=736739cce07c73eddba140fdee00b5363fa64e22" +
+                " sonar:sonar -Dsonar.login=" + sonarToken +
                 " -Dsonar.projectKey=" + pureFileName + ".key"+
-                " -Dsonar.host.url=http://127.0.0.1:9000 -Dsonar.projectName=" + pureFileName);
+                " -Dsonar.host.url=" + sonarUrl + " -Dsonar.projectName=" + pureFileName);
         for (String comm : command) {
             log.info("{}",comm);
         }
@@ -111,7 +132,7 @@ public class SonarqubeService {
     public SonarqubeMeasure measure(int sonarqubeId) {
         SonarqubeDto sonarqubeDto = sonarqubeDao.getById(sonarqubeId);
         String sonarqubeKey = sonarqubeDto.getSonarqubeKey();
-        String hostUrl = "http://127.0.0.1:9000";
+        String hostUrl = sonarUrl;
         String apiUrl = "/api/measures/component";
         String metricKeys = "bugs,vulnerabilities,code_smells,coverage,ncloc,duplicated_lines_density";
 
@@ -123,7 +144,7 @@ public class SonarqubeService {
         RestTemplate restTemplate = new RestTemplate();
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(new MediaType("application","json", Charset.forName("UTF-8")));
-        restTemplate.getInterceptors().add(new BasicAuthenticationInterceptor("admin","admin!@34"));
+        restTemplate.getInterceptors().add(new BasicAuthenticationInterceptor(sonarUsername,sonarPassword));
 
         ResponseEntity<String> exchange = restTemplate.exchange(builder.toUriString(), HttpMethod.GET, new HttpEntity<String>(headers), String.class);
         String body = exchange.getBody();

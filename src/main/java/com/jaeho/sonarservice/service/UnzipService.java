@@ -37,14 +37,12 @@ public class UnzipService {
         //압축되어 있는 ZIP 파일의 목록 조회
         while ((zipentry = zis.getNextEntry()) != null) {
             String filename = zipentry.getName();
-//            System.out.println("filename(zipentry.getName()) => " + filename);
             File file = new File(directory, filename);
             // entiry가 폴더면 폴더 생성
             if (zipentry.isDirectory()) {
-//                System.out.println("zipentry가 디렉토리입니다.");
+                System.out.println("zipentry가 디렉토리입니다.");
                 file.mkdirs();
             } else { //파일이면 파일 만들기
-//                System.out.println("zipentry가 파일입니다.");
                 try {
                     createFile(file, zis);
                 } catch (Throwable e) {
