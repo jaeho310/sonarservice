@@ -6,7 +6,6 @@
 
 ## 개발환경
 - spring boot
-  - 
 - maven
 - mybatis
 - mysql
