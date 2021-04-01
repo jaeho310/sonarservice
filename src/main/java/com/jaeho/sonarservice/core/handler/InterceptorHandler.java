@@ -19,7 +19,7 @@ public class InterceptorHandler implements HandlerInterceptor {
         HttpSession session = request.getSession();
         Object data = session.getAttribute("UserInfo");
         String requestURI = request.getRequestURI();
-        System.out.println("requestURI = " + requestURI);
+        log.info(requestURI);
         if (data == null) {
             response.sendRedirect("/users/login");
             return false;
