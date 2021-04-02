@@ -44,8 +44,19 @@ public class FileService {
      * @param httpSession 유저정보를 얻기위한 session
      */
     public void fileUpload(MultipartFile multipartFile, String projectName, HttpSession httpSession) {
-        String downloadDir = rootLocation;
         UserDto userInfo = (UserDto) httpSession.getAttribute("UserInfo");
+        String fileExtension = getFileExtension(multipartFile.getOriginalFilename());
+
+        if(!fileExtension.equals(".zip")) {
+            throw new BusinessException("zip파일을 업로드 해주세요");
+        }
+
+        boolean isDuplicated = checkProjectNameDuplicated(projectName, userInfo.getId());
+        if (isDuplicated) {
+            throw new BusinessException("중복된 프로젝트명입니다. 프로젝트명을 변경해주세요");
+        }
+
+        String downloadDir = rootLocation;
         downloadDir = downloadDir + "/" + userInfo.getUserId();
         File makeFolder = new File(downloadDir);
         if(!makeFolder.exists()) {
@@ -62,6 +73,25 @@ public class FileService {
         }
         FileDto fileDto = FileDto.builder().userId(userInfo.getId()).fileName(multipartFile.getOriginalFilename()).projectName(projectName).build();
         this.insertFile(fileDto);
+    }
+
+    /**
+     * 파일확장자 확인 메서드
+     * @param originalFilename
+     * @return
+     */
+    private String getFileExtension(String originalFilename) {
+        return originalFilename.substring(originalFilename.length() - 4);
+    }
+
+    /**
+     * 동일한 프로젝트명으로 파일업로드를 방지하기위한 메서드
+     * @param projectName
+     * @return
+     */
+    private boolean checkProjectNameDuplicated(String projectName, int userId) {
+        int result = fileDao.checkProjectNameDuplicated(projectName, userId);
+        return result != 0;
     }
 
     /**
@@ -93,6 +123,10 @@ public class FileService {
         return fileDao.getByFileId(fileId);
     }
 
+    /**
+     * 파일목록에서 파일을 제거하는 메서드
+     * @param fileId
+     */
     @Transactional
     public void deleteById(int fileId) {
         int cnt = fileDao.deleteById(fileId);

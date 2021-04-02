@@ -19,4 +19,6 @@ public interface FileDao {
     int isExist(String fileId);
 
     int deleteById(int fileId);
+
+    int checkProjectNameDuplicated(String projectName, int userId);
 }

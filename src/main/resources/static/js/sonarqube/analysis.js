@@ -22,11 +22,11 @@ $(document).ready(function(){
             },
             success: function(data) {
                 alert("분석완료, 대시보드창을 확인해주세요");
-                $("#loading").show();
+                $("#loading").hide();
             },
             error: function(request,status,error){
                 alert(" message = " + request.responseText);
-                $("#loading").show();
+                $("#loading").hide();
             }
         });
     });

@@ -3,6 +3,7 @@ package com.jaeho.sonarservice.service;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonParser;
+import com.jaeho.sonarservice.core.exception.BusinessException;
 import com.jaeho.sonarservice.domain.dao.SonarqubeDao;
 import com.jaeho.sonarservice.domain.model.FileDto;
 import com.jaeho.sonarservice.domain.model.SonarqubeDto;
@@ -15,6 +16,7 @@ import org.springframework.http.*;
 import org.springframework.http.client.support.BasicAuthenticationInterceptor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponents;
 import org.springframework.web.util.UriComponentsBuilder;
@@ -75,7 +77,7 @@ public class SonarqubeService {
         unzipService.decompress(fileDto.getFileName(), userInfo.getUserId());
         mavenInstall(pureFileName,userInfo.getUserId());
 
-        // 분석후, 소나큐브에 테이블에 isnert
+        // 분석후, 소나큐브에 테이블에 insert
         // 이전에 insert 한경우 skip
         if (sonarqubeDao.getCnt(fileDto.getId()) == 0) {
             SonarqubeDto sonarqubeDto = SonarqubeDto
@@ -121,8 +123,11 @@ public class SonarqubeService {
                 System.out.println("line = " + line);
             }
         }
-
         process.waitFor();
+
+        if (stringBuilder.toString().contains("BUILD FAILURE")) {
+            throw new RuntimeException("분석에 실패하였습니다.");
+        }
     }
 
     /**
@@ -146,8 +151,14 @@ public class SonarqubeService {
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(new MediaType("application","json", Charset.forName("UTF-8")));
         restTemplate.getInterceptors().add(new BasicAuthenticationInterceptor(sonarUsername,sonarPassword));
+        ResponseEntity<String> exchange = null;
+        try {
+            exchange = restTemplate.exchange(builder.toUriString(), HttpMethod.GET, new HttpEntity<String>(headers), String.class);
+        } catch (RestClientException e){
+            log.error(e.getMessage());
+            throw new RuntimeException("소나큐브 서버 에러입니다.");
+        }
 
-        ResponseEntity<String> exchange = restTemplate.exchange(builder.toUriString(), HttpMethod.GET, new HttpEntity<String>(headers), String.class);
         String body = exchange.getBody();
         JsonParser jsonParser = new JsonParser();
         JsonArray JsonArray = jsonParser.parse(body)

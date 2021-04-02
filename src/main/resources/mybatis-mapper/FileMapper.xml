@@ -26,4 +26,10 @@
         DELETE FROM SONARSERVICE.MAVEN_FILES
         WHERE id = #{fileId}
     </delete>
+
+    <select id="checkProjectNameDuplicated" resultType="int">
+        SELECT COUNT(*) FROM SONARSERVICE.MAVEN_FILES
+        WHERE project_name = #{projectName}
+        AND user_id = #{userId}
+    </select>
 </mapper>

@@ -11,11 +11,12 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 import javax.servlet.http.HttpServletResponse;
 
 @Slf4j
-@RestControllerAdvice("com.jaeho.sonarservice.controller.api")
+@RestControllerAdvice
 public class RestControllerExceptionAdvice {
 
-    @ExceptionHandler(Exception.class)
+    @ExceptionHandler(RuntimeException.class)
     public ResponseEntity<String> Exception(HttpServletResponse response, Exception e) {
+        log.error(e.getMessage());
         return new ResponseEntity<String>(e.getMessage(), HttpStatus.BAD_REQUEST);
     }
 }
