@@ -36,6 +36,7 @@ public class UserService {
 
     /**
      * db에 복호화된 password와 유저가 입력한 password를 복호화한 값이 같은지 비교
+     * 로그인 성공시 20분의 유지시간을 가진 세션 부여
      * @param userId 사용자가 입력한 아이디
      * @param password 사용자가 입력한 비밀번호
      */
@@ -47,6 +48,7 @@ public class UserService {
         }
         UserDto userDto = userDao.userLogin(userId);
         httpSession.setAttribute("UserInfo", userDto);
+        httpSession.setMaxInactiveInterval(20*60);
         return userDto;
     }
 }
