@@ -25,7 +25,8 @@ public class CustomErrorController implements ErrorController {
         switch(status) {
             case "403" : return "error/error403";
             case "500" : return "error/error500";
-            default : return "error/error404";
+            case "404" : return "error/error404";
+            default : return "error/error";
         }
     }
 

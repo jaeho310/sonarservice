@@ -1,6 +1,5 @@
 package com.jaeho.sonarservice.service;
 
-import com.jaeho.sonarservice.core.exception.BusinessException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
@@ -18,8 +17,8 @@ public class UnzipService {
 
     /**
      * 압축풀기 메서드
-     * @param zipFileName
-     * @param userId
+     * @param zipFileName zip파일이름
+     * @param userId 사용자Uid
      * @throws Throwable
      */
     public void decompress(String zipFileName, String userId) throws Throwable {
@@ -47,19 +46,13 @@ public class UnzipService {
                     createFile(file, zis);
                 } catch (Throwable e) {
                     e.printStackTrace();
-                    throw new BusinessException(e.getMessage());
+                    throw new RuntimeException(e.getMessage());
                 }
             }
         }
         log.info("압축풀기 성공");
     }
 
-    /**
-     * 파일생성 메서드
-     * @param file
-     * @param zis
-     * @throws Throwable
-     */
     private void createFile(File file, ZipInputStream zis) throws Throwable {
         File parentDir = new File(file.getParent());
         if (!parentDir.exists()) {

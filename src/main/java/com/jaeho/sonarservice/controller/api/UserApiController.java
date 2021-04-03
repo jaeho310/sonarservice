@@ -33,7 +33,7 @@ public class UserApiController {
 
     /**
      * ID 중복체크 메서드
-     * @param userId
+     * @param userId 유저 아이디
      * @return true는 중복, false는 중복되지 않은 ID
      */
     @GetMapping("/{userId}/exist")
@@ -43,8 +43,8 @@ public class UserApiController {
 
     /**
      * 로그인 메서드
-     * @param httpSession
-     * @param userLoginRequest
+     * @param httpSession 세션
+     * @param userLoginRequest 입력한 아이디와 비밀번호
      * @return
      * @throws Exception
      */
@@ -56,7 +56,7 @@ public class UserApiController {
 
     /**
      * 로그아웃 메서드
-     * @param httpSession
+     * @param httpSession invalidate를 위한 세션
      * @return
      */
     @GetMapping("/logout")

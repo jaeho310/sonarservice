@@ -19,7 +19,7 @@ public class UserService {
 
     /**
      * 회원가입 메서드
-     * @param userDto
+     * @param userDto 유저정보를 담는 객체
      */
     @Transactional
     public void insertMember(UserDto userDto) {
@@ -36,9 +36,8 @@ public class UserService {
 
     /**
      * db에 복호화된 password와 유저가 입력한 password를 복호화한 값이 같은지 비교
-     * @param userId
-     * @param password
-     * @return
+     * @param userId 사용자가 입력한 아이디
+     * @param password 사용자가 입력한 비밀번호
      */
     public UserDto userLogin(String userId, String password, HttpSession httpSession) {
         String encodedPassword = userDao.getEncodedPassword(userId);

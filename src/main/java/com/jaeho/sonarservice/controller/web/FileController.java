@@ -1,6 +1,5 @@
 package com.jaeho.sonarservice.controller.web;
 
-import com.jaeho.sonarservice.core.exception.BusinessException;
 import com.jaeho.sonarservice.domain.model.FileDto;
 import com.jaeho.sonarservice.service.FileService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,6 +11,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import javax.servlet.http.HttpSession;
@@ -38,9 +38,13 @@ public class FileController {
      * @return
      */
     @PostMapping("/upload")
-    public String fileUpload(@RequestParam("file") MultipartFile file,@RequestParam("projectName") String projectName, HttpSession httpSession) {
+    public ModelAndView fileUpload(@RequestParam("file") MultipartFile file, @RequestParam("projectName") String projectName, HttpSession httpSession) {
         fileService.fileUpload(file, projectName, httpSession);
-        return "redirect:/files/upload";
+        ModelAndView mav = new ModelAndView();
+        mav.addObject("message", "파일업로드 성공");
+        mav.setViewName("files/upload");
+        return mav;
+//        return "redirect:/files/upload";
     }
 
 }

@@ -20,7 +20,7 @@ public class SonarqubeApiController {
 
     /**
      * 파일정보를 통해 maven build, 소나큐브 분석을 하는 메서드
-     * @param fileId
+     * @param fileId 파일id
      * @return
      * @throws Throwable
      */
@@ -32,7 +32,7 @@ public class SonarqubeApiController {
 
     /**
      * 소나큐브 api를 통해 데이터를 받아오는 메서드
-     * @param sonarqubeId
+     * @param sonarqubeId 소나큐브 id
      * @return
      */
     @PostMapping("/measure")
@@ -43,7 +43,7 @@ public class SonarqubeApiController {
 
     /**
      * 유저정보를 통해 소나큐브 분석한 list를 반환하는 메서드
-     * @param httpSession
+     * @param httpSession 유저정보를 얻기위한 세션
      * @return
      */
     @GetMapping("/list")

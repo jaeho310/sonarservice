@@ -146,7 +146,7 @@ function openWindow(key, type) {
     if (type) {
         location = sonarqubeIssueUrl + "id=" + key + "&" + "type=" + type
     } else {
-        location = sonarqubeOverviewUrl + + "id=" + key;
+        location = sonarqubeOverviewUrl + "id=" + key;
     }
 
     window.open(location);

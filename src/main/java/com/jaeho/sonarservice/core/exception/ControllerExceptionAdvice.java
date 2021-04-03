@@ -10,11 +10,16 @@ import org.springframework.web.servlet.ModelAndView;
 @ControllerAdvice
 public class ControllerExceptionAdvice {
 
-    @ExceptionHandler(BusinessException.class)
+    /**
+     * 파일업로드 에러 핸들링
+     * @param e Exception e
+     * @return
+     */
+    @ExceptionHandler(FileException.class)
     public ModelAndView businessError(Exception e) {
         log.error(e.toString());
         ModelAndView mav = new ModelAndView();
-        mav.setViewName("/error/businesserror");
+        mav.setViewName("/files/upload");
         mav.addObject("message", e.getMessage());
         return mav;
     }

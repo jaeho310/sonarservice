@@ -3,7 +3,6 @@ package com.jaeho.sonarservice.service;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonParser;
-import com.jaeho.sonarservice.core.exception.BusinessException;
 import com.jaeho.sonarservice.domain.dao.SonarqubeDao;
 import com.jaeho.sonarservice.domain.model.FileDto;
 import com.jaeho.sonarservice.domain.model.SonarqubeDto;
@@ -64,7 +63,7 @@ public class SonarqubeService {
 
     /**
      * 유저정보와 fileId를 통해 DB에서 파일정보를 select, 해당 zip파일의 압축을풀고 소나큐브 분석을 하는 메서드
-     * @param fileId
+     * @param fileId fileUid
      * @return
      * @throws Throwable
      */
@@ -95,7 +94,7 @@ public class SonarqubeService {
     /**
      * mvn 명령어를 통해 sonarqube 분석
      * 소나큐브 서버가 필요합니다.
-     * @param pureFileName
+     * @param pureFileName zip파일을 찾기위한 풀파일네임
      * @throws IOException
      * @throws InterruptedException
      */
@@ -126,13 +125,13 @@ public class SonarqubeService {
         process.waitFor();
 
         if (stringBuilder.toString().contains("BUILD FAILURE")) {
-            throw new RuntimeException("분석에 실패하였습니다.");
+            throw new RuntimeException("분석 실패! 소나큐브서버오류 또는 메이븐빌드 오류입니다.");
         }
     }
 
     /**
      * 소나큐브 API를 사용해 대시보드에 필요한 데이터를 return해준다.
-     * @param sonarqubeId
+     * @param sonarqubeId sonarqubeUid
      * @return sonarqubeMeasure
      */
     public SonarqubeMeasure measure(int sonarqubeId) {
@@ -199,7 +198,7 @@ public class SonarqubeService {
 
     /**
      * 사용자에게 정적분석을 완료한 프로젝트 명을 보여주기 위한 메서드
-     * @param httpSession
+     * @param httpSession 사용자 확인을 위한 session
      * @return
      */
     public List<Map<String, Object>> getSonarqubeList(HttpSession httpSession) {
