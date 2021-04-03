@@ -20,7 +20,7 @@
 3. 소나큐브 분석
 4. 대시보드 모니터링
 
-## 사용시 주의사항
+## 
 1. application.properties 파일에 datasource 설정
 2. application.properties 파일에 spring.datasource.initialization-mode를 always로 변경(shcema.sql 파일 실행)
 3. application.properties 파일에 파일다운로드 위치 및 소나큐브 정보 입력(url,id,password,token)
