@@ -25,24 +25,23 @@ public class FileController {
     private FileService fileService;
 
     @GetMapping("/upload")
-    public String list(){
+    public String list(Model model, String message){
+        model.addAttribute("message", message);
         return "files/upload";
     }
 
     /**
-     *
+     * form을 통한 파일업로드, 새로고침시 POST요청이 오늘걸 방지하기위해 POST REDIRECT GET
      * @param file 사용자가 업로드한 파일
      * @param projectName 파일에 대한 프로젝트 이름
      * @param httpSession 사용자 정보를 얻기위한 session
      * @return
      */
     @PostMapping("/upload")
-    public ModelAndView fileUpload(@RequestParam("file") MultipartFile file, @RequestParam("projectName") String projectName, HttpSession httpSession) {
+    public String fileUpload(RedirectAttributes redirectAttributes, @RequestParam("file") MultipartFile file, @RequestParam("projectName") String projectName, HttpSession httpSession) {
         fileService.fileUpload(file, projectName, httpSession);
-        ModelAndView mav = new ModelAndView();
-        mav.addObject("message", "파일업로드 성공");
-        mav.setViewName("files/upload");
-        return mav;
+        redirectAttributes.addAttribute("message", "업로드성공");
+        return "redirect:/files/upload";
     }
 
 }

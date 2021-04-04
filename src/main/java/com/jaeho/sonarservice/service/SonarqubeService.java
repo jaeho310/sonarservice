@@ -225,7 +225,7 @@ public class SonarqubeService {
      */
     public void deleteSonarqubeProjectByFileId(int fileId) {
         int result = sonarqubeDao.deleteByFileId(fileId);
-        if (result != 0) {
+        if (result == 1) {
             SonarqubeDto sonarqubeDto = sonarqubeDao.getByFileId(fileId);
             String sonarqubeKey = sonarqubeDto.getSonarqubeKey();
             String hostUrl = sonarUrl;
