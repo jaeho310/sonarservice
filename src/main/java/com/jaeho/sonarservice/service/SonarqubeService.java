@@ -3,14 +3,15 @@ package com.jaeho.sonarservice.service;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonParser;
+import com.jaeho.sonarservice.domain.dao.FileDao;
 import com.jaeho.sonarservice.domain.dao.SonarqubeDao;
 import com.jaeho.sonarservice.domain.model.FileDto;
 import com.jaeho.sonarservice.domain.model.SonarqubeDto;
 import com.jaeho.sonarservice.domain.model.SonarqubeMeasure;
 import com.jaeho.sonarservice.domain.model.UserDto;
-import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.http.*;
 import org.springframework.http.client.support.BasicAuthenticationInterceptor;
 import org.springframework.stereotype.Service;
@@ -36,7 +37,7 @@ public class SonarqubeService {
 
     private UnzipService unzipService;
 
-    private FileService fileService;
+    private FileDao fileDao;
 
     private SonarqubeDao sonarqubeDao;
 
@@ -55,9 +56,9 @@ public class SonarqubeService {
     @Value("${sonarqube.password}")
     private String sonarPassword;
 
-    public SonarqubeService(UnzipService unzipService, FileService fileService, SonarqubeDao sonarqubeDao) {
+    public SonarqubeService(UnzipService unzipService, FileDao fileDao, SonarqubeDao sonarqubeDao) {
         this.unzipService = unzipService;
-        this.fileService = fileService;
+        this.fileDao = fileDao;
         this.sonarqubeDao = sonarqubeDao;
     }
 
@@ -69,7 +70,7 @@ public class SonarqubeService {
      */
     @Transactional
     public boolean analysis(int fileId, HttpSession httpSession) throws Throwable {
-        FileDto fileDto = fileService.getByFileId(fileId);
+        FileDto fileDto = fileDao.getByFileId(fileId);
         String pureFileName = fileDto.getFileName().replace(".zip","");
 
         UserDto userInfo = (UserDto) httpSession.getAttribute("UserInfo");
@@ -215,5 +216,37 @@ public class SonarqubeService {
         Map<String, String> response = new HashMap<>();
         response.put("url", sonarUrl);
         return response;
+    }
+
+    /**
+     * 소나큐브 테이블에서 프로젝트 삭제, 삭제된경우 분석한적이 있는 프로젝트이므로
+     * 소나큐브 api를 통해 소나큐브사이트에서도 해당 프로젝트 삭제
+     * @param fileId
+     */
+    public void deleteSonarqubeProjectByFileId(int fileId) {
+        int result = sonarqubeDao.deleteByFileId(fileId);
+        if (result != 0) {
+            SonarqubeDto sonarqubeDto = sonarqubeDao.getByFileId(fileId);
+            String sonarqubeKey = sonarqubeDto.getSonarqubeKey();
+            String hostUrl = sonarUrl;
+            String apiUrl = "/api/projects/delete";
+
+            UriComponents builder = UriComponentsBuilder.fromHttpUrl(hostUrl+apiUrl)
+                    .queryParam("project",sonarqubeKey)
+                    .build();
+
+            RestTemplate restTemplate = new RestTemplate();
+            HttpHeaders headers = new HttpHeaders();
+            headers.setContentType(new MediaType("application","json", Charset.forName("UTF-8")));
+            restTemplate.getInterceptors().add(new BasicAuthenticationInterceptor(sonarUsername,sonarPassword));
+            ResponseEntity<String> exchange = null;
+            try {
+                exchange = restTemplate.exchange(builder.toUriString(), HttpMethod.POST, new HttpEntity<String>(headers), String.class);
+            } catch (RestClientException e){
+                log.error(e.getMessage());
+                throw new RuntimeException("소나큐브 서버 에러입니다.");
+            }
+        }
+
     }
 }

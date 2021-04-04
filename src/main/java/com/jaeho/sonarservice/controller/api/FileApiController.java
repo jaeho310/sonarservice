@@ -2,6 +2,7 @@ package com.jaeho.sonarservice.controller.api;
 
 import com.jaeho.sonarservice.domain.model.FileDto;
 import com.jaeho.sonarservice.service.FileService;
+import com.jaeho.sonarservice.service.SonarqubeService;
 import lombok.AllArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -18,6 +19,8 @@ public class FileApiController {
 
     private FileService fileService;
 
+    private SonarqubeService sonarqubeService;
+
     /**
      * 세션에 있는 유저정보를 통해 유저가 upload한 파일목록을 보여주는 메서드
      * @param httpSession 유저정보를 얻기위한 session
@@ -32,6 +35,7 @@ public class FileApiController {
     @DeleteMapping("/files")
     public ResponseEntity delete(@RequestParam int fileId) {
         fileService.deleteById(fileId);
+        sonarqubeService.deleteSonarqubeProjectByFileId(fileId);
         return ResponseEntity.ok().build();
     }
 }

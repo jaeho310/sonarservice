@@ -2,11 +2,9 @@ package com.jaeho.sonarservice.service;
 
 import com.jaeho.sonarservice.core.exception.FileException;
 import com.jaeho.sonarservice.domain.dao.FileDao;
-import com.jaeho.sonarservice.domain.dao.SonarqubeDao;
 import com.jaeho.sonarservice.domain.model.FileDto;
 import com.jaeho.sonarservice.domain.model.UserDto;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -28,11 +26,8 @@ public class FileService {
 
     private FileDao fileDao;
 
-    private SonarqubeDao sonarqubeDao;
-
-    public FileService(FileDao fileDao, SonarqubeDao sonarqubeDao) {
+    public FileService(FileDao fileDao, SonarqubeService sonarqubeService) {
         this.fileDao = fileDao;
-        this.sonarqubeDao = sonarqubeDao;
     }
 
     @Value("${file.location}")
@@ -99,7 +94,6 @@ public class FileService {
      * @param fileDto 파일정보를 담은 객체
      * @return
      */
-
     @Transactional
     public int insertFile(FileDto fileDto) {
         return fileDao.insertFile(fileDto);
@@ -133,6 +127,5 @@ public class FileService {
         if (cnt != 1) {
             throw new FileException("파일 삭제 실패");
         }
-        cnt = sonarqubeDao.deleteByFileId(fileId);
     }
 }

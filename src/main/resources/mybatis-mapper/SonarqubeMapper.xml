@@ -30,4 +30,9 @@
         SELECT * FROM SONARSERVICE.SONARQUBE
         WHERE maven_files_id = #{fileId}
     </delete>
+
+    <select id="getByFileId" resultType="SonarqubeDto">
+        SELECT * FROM SONARSERVICE.SONARQUBE
+        WHERE maven_files_id = #{fileId}
+    </select>
 </mapper>

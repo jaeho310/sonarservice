@@ -1,6 +1,5 @@
 package com.jaeho.sonarservice.controller.web;
 
-import com.jaeho.sonarservice.domain.model.FileDto;
 import com.jaeho.sonarservice.service.FileService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.data.ConditionalOnRepositoryType;
@@ -44,7 +43,6 @@ public class FileController {
         mav.addObject("message", "파일업로드 성공");
         mav.setViewName("files/upload");
         return mav;
-//        return "redirect:/files/upload";
     }
 
 }

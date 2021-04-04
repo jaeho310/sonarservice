@@ -18,4 +18,6 @@ public interface SonarqubeDao {
     SonarqubeDto getById(int sonarqubeId);
 
     int deleteByFileId(int fileId);
+
+    SonarqubeDto getByFileId(int fileId);
 }
