@@ -27,7 +27,7 @@
     </select>
 
     <delete id="deleteByFileId">
-        SELECT * FROM SONARSERVICE.SONARQUBE
+        DELETE FROM SONARSERVICE.SONARQUBE
         WHERE maven_files_id = #{fileId}
     </delete>
 
