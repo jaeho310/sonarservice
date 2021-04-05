@@ -224,8 +224,8 @@ public class SonarqubeService {
      * @param fileId
      */
     public void deleteSonarqubeProjectByFileId(int fileId) {
-        int result = sonarqubeDao.deleteByFileId(fileId);
-        if (result == 1) {
+        int cnt = sonarqubeDao.getCnt(fileId);
+        if (cnt == 1) {
             SonarqubeDto sonarqubeDto = sonarqubeDao.getByFileId(fileId);
             String sonarqubeKey = sonarqubeDto.getSonarqubeKey();
             String hostUrl = sonarUrl;
@@ -246,6 +246,7 @@ public class SonarqubeService {
                 log.error(e.getMessage());
                 throw new RuntimeException("소나큐브 서버 에러입니다.");
             }
+            sonarqubeDao.deleteByFileId(fileId);
         }
 
     }
