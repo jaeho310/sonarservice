@@ -1,6 +1,6 @@
 ## 프로젝트 설명
 메이븐파일을 올리면 Sonarqube를 활용하여 Maven프로젝트에 대한 품질을 표현주는 프로젝트입니다.<br>
-인증 인가는 로그인시 Session을 부여하여 인터셉터에서 확인하는 방식입니다.<br>
+인증 인가는 로그인시 Session을 부여하여 인터셉터에서 확인하였으며<br>
 전역예외처리는 ControllerAdvice에 CustomException클래스를 만들어 사용하였습니다.<br>
 
 
