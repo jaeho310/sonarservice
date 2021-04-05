@@ -40,17 +40,22 @@ public class FileService {
      */
     public void fileUpload(MultipartFile multipartFile, String projectName, HttpSession httpSession) {
         UserDto userInfo = (UserDto) httpSession.getAttribute("UserInfo");
-        String fileExtension = getFileExtension(multipartFile.getOriginalFilename());
+        String fileName = multipartFile.getOriginalFilename();
+        String fileExtension = this.getFileExtension(fileName);
 
         if(!fileExtension.equals(".zip")) {
             throw new FileException("zip파일을 업로드 해주세요");
         }
 
-        boolean isDuplicated = checkProjectNameDuplicated(projectName, userInfo.getId());
-        if (isDuplicated) {
+        boolean isDuplicatedProjectName = this.checkProjectNameDuplicated(projectName, userInfo.getId());
+        if (isDuplicatedProjectName) {
             throw new FileException("중복된 프로젝트명입니다. 프로젝트명을 변경해주세요");
         }
 
+        boolean isDuplicatedFileName = this.checkFileNameDuplicated(fileName,userInfo.getId());
+        if (isDuplicatedFileName) {
+            throw new FileException("중복된 파일입니다. 목록을 확인해주세요");
+        }
         String downloadDir = rootLocation;
         downloadDir = downloadDir + "/" + userInfo.getUserId();
         File makeFolder = new File(downloadDir);
@@ -68,6 +73,11 @@ public class FileService {
         }
         FileDto fileDto = FileDto.builder().userId(userInfo.getId()).fileName(multipartFile.getOriginalFilename()).projectName(projectName).build();
         this.insertFile(fileDto);
+    }
+
+    private boolean checkFileNameDuplicated(String fileName, int userId) {
+        int result = fileDao.checkFileNameDuplicated(fileName, userId);
+        return result != 0;
     }
 
     /**

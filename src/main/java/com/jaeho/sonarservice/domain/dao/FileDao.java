@@ -21,4 +21,6 @@ public interface FileDao {
     int deleteById(int fileId);
 
     int checkProjectNameDuplicated(String projectName, int userId);
+
+    int checkFileNameDuplicated(String fileName, int userId);
 }

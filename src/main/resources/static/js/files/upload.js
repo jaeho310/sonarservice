@@ -77,15 +77,11 @@ function pagination() {
       num_pages=Math.floor(num_pages++);
     }
 
-    jQuery('.pagination').append("<li><a class=\"prev\">Previous</a></li>");
-
     for(var i=1; i<=num_pages; i++){
-      jQuery('.pagination').append("<li><a>"+i+"</a></li>");
-    jQuery('.pagination li:nth-child(2)').addClass("active");
-    jQuery('.pagination a').addClass("pagination-link");
+        jQuery('.pagination').append("<li><a>"+i+"</a></li>");
+        jQuery('.pagination li:nth-child(2)').addClass("active");
+        jQuery('.pagination a').addClass("pagination-link");
     }
-
-    jQuery('.pagination').append("<li><a class=\"next\">Next</a></li>");
 
     $tr.each(function(i){
     jQuery(this).hide();

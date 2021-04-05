@@ -5,6 +5,7 @@ import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.servlet.ModelAndView;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 @Slf4j
 @ControllerAdvice
@@ -16,12 +17,10 @@ public class ControllerExceptionAdvice {
      * @return
      */
     @ExceptionHandler(FileException.class)
-    public ModelAndView businessError(Exception e) {
+    public String businessError(Exception e, RedirectAttributes redirectAttributes) {
         log.error(e.toString());
-        ModelAndView mav = new ModelAndView();
-        mav.setViewName("/files/upload");
-        mav.addObject("message", e.getMessage());
-        return mav;
+        redirectAttributes.addAttribute("message", e.getMessage());
+        return "redirect:/files/upload";
     }
 
 }
