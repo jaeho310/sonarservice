@@ -1,4 +1,4 @@
-## 프로젝트 설명
+## 프로젝트 설명(자세한 설명은 최상위 디렉토리 pptx, pdf 파일에 있습니다.)
 메이븐파일을 올리면 Sonarqube를 활용하여 Maven프로젝트에 대한 품질을 표현주는 프로젝트입니다.<br>
 인증 인가는 로그인시 Session을 부여하여 인터셉터에서 확인하였으며<br>
 전역예외처리는 ControllerAdvice에 CustomException클래스를 만들어 사용하였습니다.<br>
@@ -25,5 +25,3 @@
 2. application.properties 파일에 spring.datasource.initialization-mode를 always로 변경(shcema.sql 파일 실행)
 3. application.properties 파일에 파일다운로드 위치 및 소나큐브 정보 입력(url,id,password,token)
 4. 소나큐브다운로드 및 실행(소나큐브 다운로드 링크 : https://www.sonarqube.org/)
-
-## 설명을 위하여 디렉토리 최상단에 pdf와 ppt 파일을 첨부하였습니다.
