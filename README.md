@@ -25,3 +25,5 @@
 2. application.properties 파일에 spring.datasource.initialization-mode를 always로 변경(shcema.sql 파일 실행)
 3. application.properties 파일에 파일다운로드 위치 및 소나큐브 정보 입력(url,id,password,token)
 4. 소나큐브다운로드 및 실행(소나큐브 다운로드 링크 : https://www.sonarqube.org/)
+
+## 설명을 위하여 디렉토리 최상단에 pdf와 ppt 파일을 첨부하였습니다.
